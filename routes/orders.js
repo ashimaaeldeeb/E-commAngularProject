@@ -4,8 +4,6 @@ const User = require('../models/user');
 const Product = require('../models/product');
 const Order = require('../models/order');
 
-const validateUser = require('../helpers/validateUser');
-const validateProduct = require('../helpers/validateProduct');
 const validateOrder = require('../helpers/validateOrder');
 const validateObjectId = require('../helpers/validateObjectId');
 
