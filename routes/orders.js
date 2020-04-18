@@ -36,15 +36,20 @@ router.patch('/:id', async (req, res) => {
     if (error) {
         return res.status(400).send("Invalid ID");
     }
+    const oldOrder = await Order.findById(id);
     const newOrder = await Order.findByIdAndUpdate(id, {
         ...req.body
     }, {
         new: true
     });
-    if(newOrder.status == "accepted"){
+    if(oldOrder.status!="accepted" && newOrder.status == "accepted"){
         newOrder.products.forEach(async productObj => {
-            const product = await Product.find({isDeleted: { $ne: true }, id: productObj.product})
+            // const product = await Product.find({isDeleted: { $ne: true }, _id: productObj.product});
+            const product = await Product.findById(productObj.product);  //check on isdeleted
             product.quantity -= productObj.quantity;
+            if(product.quantity<0){
+                product.quantity=0;
+            }
             await product.save();
         });
     }
