@@ -6,6 +6,7 @@ const usersRouter = require('./routes/users');
 const ordersRouter = require('./routes/orders');
 const cartsRouter = require('./routes/carts');
 
+const productsRouter = require('./routes/products');
 
 const app = express();
 
@@ -25,4 +26,5 @@ app.use('/users', usersRouter);
 app.use('/orders', ordersRouter);
 app.use('/carts', cartsRouter);
 
+app.use('/products', productsRouter);
 app.listen(port, () => console.log(`Express listener on port ${port}`));
