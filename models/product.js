@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-
 const productSchema = new mongoose.Schema({
     title: {
         type: String,
@@ -13,14 +12,31 @@ const productSchema = new mongoose.Schema({
         type: Number,
         required: true
     },
-    isPromoted: {
-        type: Boolean
+    details: {
+        brand: {
+            type: String
+        },
+        processor: {
+            type: String
+        },
+        ram: {
+            type: String
+        },
+        hardDisk: {
+            type: String
+        },
+        graphicsCard: {
+            type: String
+        },
+        color: {
+            type: String
+        }
     },
-    promotion: {
+    ratioOfPromotion: {
         type: Number
     },
-    details: {
-        type: String
+    isPromoted: {
+        type: Boolean
     },
     quantity: {
         type: Number,
@@ -28,9 +44,14 @@ const productSchema = new mongoose.Schema({
     },
     isDeleted: {
         type: Boolean
-    }
+    }//,
+    // rate:{
+    //     type:Number
+    // },
+    // review:{
+    //     type:Number
+    // }
 });
 
 const Product = mongoose.model('Product', productSchema);
-
 module.exports = Product;
