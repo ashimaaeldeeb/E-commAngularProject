@@ -42,7 +42,7 @@ router.patch('/:id', async (req, res) => {
         new: true
     });
     if(newOrder.status == "accepted"){
-        newOrder.products.forEach(productObj => {
+        newOrder.products.forEach(async productObj => {
             const product = await Product.find({isDeleted: { $ne: true }, id: productObj.product})
             product.quantity -= productObj.quantity;
             await product.save();
