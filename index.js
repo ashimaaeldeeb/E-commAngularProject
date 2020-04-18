@@ -4,6 +4,8 @@ const bodyParser = require('body-parser');
 
 const usersRouter = require('./routes/users');
 const ordersRouter = require('./routes/orders');
+const cartsRouter = require('./routes/carts');
+
 
 const app = express();
 
@@ -21,5 +23,6 @@ mongoose.connect(mongoURL, {
 app.use(express.json());
 app.use('/users', usersRouter);
 app.use('/orders', ordersRouter);
+app.use('/carts', cartsRouter);
 
 app.listen(port, () => console.log(`Express listener on port ${port}`));
