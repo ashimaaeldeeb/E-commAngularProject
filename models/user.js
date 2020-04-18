@@ -28,6 +28,7 @@ const userSchema = new mongoose.Schema({
         type: Boolean
     }
     //ref order
+    //ref cart
 });
 const User = mongoose.model('User', userSchema);
 module.exports = User;

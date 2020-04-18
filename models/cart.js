@@ -1,17 +1,10 @@
 const mongoose = require('mongoose');
 
-const orderSchema = new mongoose.Schema({
+const cartSchema = new mongoose.Schema({
     user: {
         type: mongoose.Schema.Types.ObjectId,
         required: true,
         ref: 'User'
-    },
-    date: {
-        type: Date
-    },
-    price: {
-        type: Number,
-        required: true
     },
     products: [{
         product: {
@@ -25,13 +18,11 @@ const orderSchema = new mongoose.Schema({
             type: Boolean
         }
     }],
-    status: {
-        type: String,
-        enum: ["pending", "accepted", "rejected", "cancelled"],
-        required: true
+    price: {
+        type: Number //default = 0
     }
 });
 
-const Order = mongoose.model('Order', orderSchema);
+const Cart = mongoose.model('Cart', cartSchema);
 
-module.exports = Order;
+module.exports = Cart;
