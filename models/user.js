@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-
+//edit
 const userSchema = new mongoose.Schema({
     userName: {
         type: String,
@@ -28,6 +28,7 @@ const userSchema = new mongoose.Schema({
         type: Boolean
     }
     //ref order
+    //ref cart
 });
 const User = mongoose.model('User', userSchema);
 module.exports = User;
