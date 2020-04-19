@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-//edit
+
 const userSchema = new mongoose.Schema({
     userName: {
         type: String,
@@ -16,9 +16,7 @@ const userSchema = new mongoose.Schema({
         required: true
     },
     image: {
-        //string
-        data: Buffer,
-        contentType: String
+        type: String
     },
     gender: {
         type: String,
@@ -27,8 +25,17 @@ const userSchema = new mongoose.Schema({
     isAdmin: {
         type: Boolean
     }
-    //ref order
-    //ref cart
+    // ,
+    // orders: {
+    //     type: mongoose.Schema.Types.ObjectId,
+    //     required: true,
+    //     ref: 'Orders'
+    // },
+    // cart: {
+    //     type: mongoose.Schema.Types.ObjectId,
+    //     required: true,
+    //     ref: "Cart"
+    // }
 });
 const User = mongoose.model('User', userSchema);
 module.exports = User;
