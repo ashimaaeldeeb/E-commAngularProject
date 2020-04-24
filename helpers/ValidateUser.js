@@ -8,8 +8,8 @@ const userSchema = Joi.object({
     image: Joi.string(),
     gender: Joi.string().valid('female', 'male'),
     isAdmin: Joi.boolean(),
-    // orders: Joi.array().items(Joi.objectId()).default([]),
-    // cart: Joi.objectId().default()
+    orders: Joi.array().items(Joi.objectId()).default([]),
+    cart: Joi.objectId().default()
 });
 const validatUser = user => userSchema.validate(user, {
     abortEarly: false

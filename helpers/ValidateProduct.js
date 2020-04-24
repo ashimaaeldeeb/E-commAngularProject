@@ -6,12 +6,12 @@ const productSchema = Joi.object({
     images: Joi.array().items(Joi.string().required()).default([]),
     price: Joi.number().required(),
     details:Joi.object({
-        brand: Joi.string(),
-        processor: Joi.string(),
-        ram: Joi.string(),
-        hardDisk: Joi.string(),
-        graphicsCard: Joi.string(),
-        color: Joi.string()
+        Brand: Joi.string(),
+        Processor: Joi.string(),
+        Ram: Joi.string(),
+        HardDisk: Joi.string(),
+        GPU: Joi.string(),
+        Color: Joi.string()
     }),
     ratioOfPromotion: Joi.number(),
     isPromoted: Joi.boolean().default(false),

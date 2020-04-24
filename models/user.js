@@ -24,18 +24,17 @@ const userSchema = new mongoose.Schema({
     },
     isAdmin: {
         type: Boolean
+    },
+    orders: {
+        type: mongoose.Schema.Types.ObjectId,
+        // required: true,
+        ref: 'Orders'
+    },
+    cart: {
+        type: mongoose.Schema.Types.ObjectId,
+        // required: true,
+        ref: "Cart"
     }
-    // ,
-    // orders: {
-    //     type: mongoose.Schema.Types.ObjectId,
-    //     required: true,
-    //     ref: 'Orders'
-    // },
-    // cart: {
-    //     type: mongoose.Schema.Types.ObjectId,
-    //     required: true,
-    //     ref: "Cart"
-    // }
 });
 const User = mongoose.model('User', userSchema);
 module.exports = User;

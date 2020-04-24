@@ -24,7 +24,7 @@ router.get('/search', async (req, res) => {
 });
 
 router.get('/promoted', async (req, res) => {
-    const products = await Product.find({$and :[{ isPromoted:true}, {isDeleted:false} ]});
+    const products = await Product.find({ isPromoted:true}, {isDeleted:false} );
     if (!products) return res.status(404).send('Product not found');
     res.send(products);
 });
