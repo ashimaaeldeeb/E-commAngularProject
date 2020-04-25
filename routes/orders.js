@@ -69,14 +69,18 @@ router.post('/', async (req, res) => {
         ...req.body
     });
     
+    await order.save();
+
     const user = await User.findById(order.user);
     user.orders.push(order.id);
     await user.save();
 
-    const cart = Cart.findById(user.cart);
+    const cart = await Cart.findById(user.cart);
     cart.products = [];
     cart.price = 0;
     await cart.save();
+
+
 
     res.send(order);
 });

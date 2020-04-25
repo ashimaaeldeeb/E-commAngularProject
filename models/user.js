@@ -25,11 +25,11 @@ const userSchema = new mongoose.Schema({
     isAdmin: {
         type: Boolean
     },
-    orders: {
+    orders: [{
         type: mongoose.Schema.Types.ObjectId,
         // required: true,
         ref: 'Orders'
-    },
+    }],
     cart: {
         type: mongoose.Schema.Types.ObjectId,
         // required: true,

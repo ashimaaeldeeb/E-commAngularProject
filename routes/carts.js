@@ -9,6 +9,11 @@ const validateObjectId = require("../helpers/validateObjectId");
 
 const router = express.Router();
 
+router.get('/',async (req, res) => {
+  const carts = await User.find({});
+  res.send(carts);
+});
+
 //Get User's Cart
 router.get("/user/:id", async (req, res) => {
   const { id } = req.params;
