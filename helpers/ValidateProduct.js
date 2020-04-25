@@ -8,7 +8,7 @@ const productSchema = Joi.object({
     details:Joi.object({
         Brand: Joi.string(),
         Processor: Joi.string(),
-        Ram: Joi.string(),
+        RAM: Joi.string(),
         HardDisk: Joi.string(),
         GPU: Joi.string(),
         Color: Joi.string()

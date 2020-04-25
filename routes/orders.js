@@ -9,12 +9,18 @@ const validateOrder = require('../helpers/ValidateOrder');
 const validateObjectId = require('../helpers/ValidateObjectId');
 
 const router = express.Router();
-
+// get: orders/ ()
 // get: orders/user/:id (user id)
 // patch: orders/:id (state only)
 // post: orders/  (checkout -> body: cart id, user id -> yfddi array elproducts eli flcart, status pending)
 // delete: orders/:id (cancel order if pending)
 
+//view admin orders
+router.get('/', async (req, res) => {
+    const orders = await Order.find({isCancelled: { $ne: true }});
+    if (!orders) return res.status(404).send('No orders found');
+    res.send(orders);
+});
 //view user orders
 router.get('/user/:id', async (req, res) => {
     const { id } = req.params;
@@ -69,14 +75,18 @@ router.post('/', async (req, res) => {
         ...req.body
     });
     
+    await order.save();
+
     const user = await User.findById(order.user);
     user.orders.push(order.id);
     await user.save();
 
-    const cart = Cart.findById(user.cart);
+    const cart = await Cart.findById(user.cart);
     cart.products = [];
     cart.price = 0;
     await cart.save();
+
+
 
     res.send(order);
 });

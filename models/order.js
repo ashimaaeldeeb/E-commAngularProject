@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const orderSchema = new mongoose.Schema({
     user: {
         type: mongoose.Schema.Types.ObjectId,
-        required: true,
+        // required: true,
         ref: 'User'
     },
     date: {
@@ -20,9 +20,6 @@ const orderSchema = new mongoose.Schema({
         },
         quantity: {
             type: Number
-        },
-        isDeleted: {
-            type: Boolean
         }
     }],
     status: {

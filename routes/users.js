@@ -45,7 +45,7 @@ router.post('/',async (req, res) => {
 });
 
 //edit user
-router.patch(':/id', async (req, res) => {
+router.patch('/:id', async (req, res) => {
     const { id } = req.params;
     const { error } = validateObjectId(id);
     if (error) {
