@@ -9,8 +9,7 @@ const orderSchema = Joi.object({
         product: Joi.objectId().optional(),
         quantity: Joi.number().optional(),
     })).default([]),
-    status: Joi.string().valid('cancelled','pending','accepted', 'rejected').required().default('pending'),
-    isCancelled: Joi.boolean().optional().default(false)
+    status: Joi.string().valid('cancelled','pending','accepted', 'rejected').required().default('pending')
 });
 
 const validateOrder = order => orderSchema.validate(order, { abortEarly: false });

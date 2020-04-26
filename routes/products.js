@@ -2,6 +2,7 @@ const express = require('express');
 const Product = require('../models/product');
 const validateProduct= require('../helpers/validateProduct');
 const validateObjectId = require('../helpers/validateObjectId');
+const url = require('url');
 
 const router = express.Router();
 
@@ -10,15 +11,32 @@ router.get('/', async (req, res) => {
     if (!products) return res.status(404).send('Product not found');
     res.send(products);
 });
-
-router.get('/search', async (req, res) => {
+//   /search/Brand?Brand=Lenovo 
+//   /search/Brand?Brand=HP
+//   /search/Brand?Brand=Dell
+router.get('/search/Brand', async (req, res) => {
     console.log("hi2");
+    console.log("Requset "+req.url);
+    const queryObject = url.parse(req.url,true).search;
     console.log(req.query);
-    console.log(req.query.brand);
+    console.log(queryObject);
+    console.log(queryObject[0]);
+    console.log(queryObject.Brand);
+    console.log(queryObject["Brand"]);
     //const products = await Product.find({"title":{ $regex:req.query.title}},{"isDeleted": false});
-    const products = await Product.find({"details.brand":req.query.brand},{"isDeleted": false});
+    const products = await Product.find({"details.Brand":req.query.Brand},{"isDeleted": false});
     console.log(req.originalUrl);
     //console.log(products)
+    if (!products) return res.status(404).send('Product not found');
+    res.send(products);
+});
+
+//   /search/Processor?Processor=Core i3 
+//   /search/Processor?Processor=Core i5
+//   /search/Processor?Processor=Core i7
+//   /search/Processor?Processor=Core i9
+router.get('/search/Processor', async (req, res) => {
+    const products = await Product.find({"details.Processor":req.query.Processor},{"isDeleted": false});
     if (!products) return res.status(404).send('Product not found');
     res.send(products);
 });
