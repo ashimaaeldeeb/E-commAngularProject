@@ -22,17 +22,18 @@ router.get("/user/:id", async (req, res) => {
   if (error) return res.status(400).send("User id is not valid");
   //   const cart = await Cart.find(p => p.id === parseInt(req.params.id) && p => p.productsList.isDeleted !== true);
   const cart = await Cart.find({ userId: id });
-  console.log("prod id", cart);
+  //console.log("prod id", cart);
 
   const productsId = [];
   for(let i=0; i<cart[0].productsList.length; i++){
     productsId.push(cart[0].productsList[i].productId)
   }
-  console.log("prod id", productsId);
+  //console.log("prod id", productsId);
   if (!cart) return res.status(404).send("Cart is not found for this user.");
 
   res.status(200).send(cart);
 });
+
 
 //Post product to user's cart
 router.post("/user/:id", validateCart, async (req, res) => {
@@ -45,7 +46,29 @@ router.post("/user/:id", validateCart, async (req, res) => {
   const userCart = await Cart.findById(user.cart); //elcart beta3t eluser dah
   if (!userCart) return res.status(400).send("User's cart is not found");
 
-  userCart.productsList.push(...req.body.productsList);
+  console.log(userCart.productsList.length);
+  console.log(req.body.productsList[0]);
+  console.log(userCart.productsList);
+
+  const product = await Product.findById(req.body.productsList[0].productId);
+  if (!product) return res.status(400).send("Product is not found");
+
+  const indexFound = userCart.productsList.findIndex(item => {
+
+    return item.productId == req.body.productsList[0].productId;
+  });
+  if (indexFound !== -1 && product.quantity <= 0) {
+    userCart.productsList.splice(indexFound, 1);
+  } else if (indexFound !== -1) {
+    userCart.productsList[indexFound].quantity = userCart.productsList[indexFound].quantity + req.body.productsList[0].quantity;
+    
+  } else if (product.quantity > 0) {
+    userCart.productsList.push({
+      productId: req.body.productsList[0].productId,
+      quantity: req.body.productsList[0].quantity
+    });
+  } 
+
 
   await userCart.save();
 
@@ -90,19 +113,20 @@ router.delete("/user/:id/product/:productId", async (req, res) => {
   const product = await Product.find({ id: req.params.productId });
   if (!product) return res.status(400).send("Product ID is not found");
 
-  const newCartItems = cart[0].productsList.filter(c=> c.productId != req.params.productId);
-  cart[0].productsList = [];
+  console.log(req.params.productId)
+  console.log(cart[0].productsList);
+  const indexFound = cart[0].productsList.findIndex(item => {
 
-  for(let i=0; i<newCartItems.length; i++){
-    cart[0].productsList.push(newCartItems[i]);
-  }
-  console.log("temp", cart[0].productsList);
-
-  const updateCart = await Cart.findByIdAndUpdate(user.cart, [...cart], {
-    new: true
+    return item.productId == req.params.productId;
   });
+  console.log(indexFound)
+  if(indexFound !==-1){ //found
+    cart[0].productsList.splice(indexFound, 1)
+    console.log(cart[0].productsList);
+  }
+  console.log(cart[0].productsList);
 
-  await updateCart.save();
+  await cart[0].save();
   res.status(200).send(cart);
 
 });
