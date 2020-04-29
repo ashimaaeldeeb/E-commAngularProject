@@ -113,8 +113,8 @@ router.delete("/user/:id/product/:productId", async (req, res) => {
   const product = await Product.find({ id: req.params.productId });
   if (!product) return res.status(400).send("Product ID is not found");
 
-  console.log(req.params.productId)
-  console.log(cart[0].productsList);
+  //console.log(req.params.productId)
+  ///console.log(cart[0].productsList);
   const indexFound = cart[0].productsList.findIndex(item => {
 
     return item.productId == req.params.productId;
@@ -129,6 +129,30 @@ router.delete("/user/:id/product/:productId", async (req, res) => {
   await cart[0].save();
   res.status(200).send(cart);
 
+});
+
+//Checkout => Empty Cart
+router.get("/user/:id/checkout", async (req, res) => {
+  const { id } = req.params;
+  const { error } = validateObjectId(req.params.id);
+  if (error) return res.status(400).send("User id is not valid");
+
+  const user = await User.findById(id);
+  if (!user) return res.status(400).send("User is not found");
+
+  let cart = await Cart.find({ userId: id });
+  if (!cart) return res.status(400).send("User's cart is not found");
+
+  //console.log(cart[0].productsList);
+
+  cart[0].productsList.splice(0, cart[0].productsList.length)
+  
+  //console.log(cart[0].productsList);
+
+
+  await cart[0].save();
+
+  res.status(200).send(cart);
 });
 
 module.exports = router;
