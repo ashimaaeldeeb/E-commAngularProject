@@ -10,7 +10,7 @@ const validateObjectId = require("../helpers/validateObjectId");
 
 const router = express.Router();
 
-router.get('/',async (req, res) => {
+router.get("/", async (req, res) => {
   const carts = await User.find({});
   res.send(carts);
 });
@@ -25,15 +25,14 @@ router.get("/user/:id", async (req, res) => {
   //console.log("prod id", cart);
 
   const productsId = [];
-  for(let i=0; i<cart[0].productsList.length; i++){
-    productsId.push(cart[0].productsList[i].productId)
+  for (let i = 0; i < cart[0].productsList.length; i++) {
+    productsId.push(cart[0].productsList[i].productId);
   }
   //console.log("prod id", productsId);
   if (!cart) return res.status(404).send("Cart is not found for this user.");
 
   res.status(200).send(cart);
 });
-
 
 //Post product to user's cart
 router.post("/user/:id", validateCart, async (req, res) => {
@@ -46,32 +45,51 @@ router.post("/user/:id", validateCart, async (req, res) => {
   const userCart = await Cart.findById(user.cart); //elcart beta3t eluser dah
   if (!userCart) return res.status(400).send("User's cart is not found");
 
-  console.log(userCart.productsList.length);
-  console.log(req.body.productsList[0]);
-  console.log(userCart.productsList);
+  //console.log(userCart.productsList.length);
+  //console.log(req.body.productsList[0]);
+  //console.log(userCart.productsList);
 
   const product = await Product.findById(req.body.productsList[0].productId);
   if (!product) return res.status(400).send("Product is not found");
 
   const indexFound = userCart.productsList.findIndex(item => {
-
     return item.productId == req.body.productsList[0].productId;
   });
-  if (indexFound !== -1 && product.quantity <= 0) {
-    userCart.productsList.splice(indexFound, 1);
-  } else if (indexFound !== -1) {
-    userCart.productsList[indexFound].quantity = userCart.productsList[indexFound].quantity + req.body.productsList[0].quantity;
-    
-  } else if (product.quantity > 0) {
-    userCart.productsList.push({
-      productId: req.body.productsList[0].productId,
-      quantity: req.body.productsList[0].quantity
-    });
-  } 
+  //console.log( userCart.productsList[0].quantity)
+  console.log(product.quantity);
+  // if (indexFound !== -1 && product.quantity <= 0) { //already here but no more products
 
+  //   userCart.productsList.splice(indexFound, 1); //law elproducts 5elset wana batlob wa7ed kman beymsa7
+
+  // } else
+  if (indexFound !== -1 && product.quantity >= 0) {
+    //already here
+    // console.log(
+    //   "alreadyhere",
+    //   product.quantity - req.body.productsList[0].quantity
+    // );
+    if (product.quantity - req.body.productsList[0].quantity >= 0) {
+      userCart.productsList[indexFound].quantity =
+        userCart.productsList[indexFound].quantity +
+        req.body.productsList[0].quantity;
+      product.quantity = product.quantity - req.body.productsList[0].quantity;
+    }
+  } else if (product.quantity > 0) { //not in cart yet
+    if (product.quantity - req.body.productsList[0].quantity >= 0) {
+      userCart.productsList.push({
+        productId: req.body.productsList[0].productId,
+        quantity: req.body.productsList[0].quantity
+      });
+      product.quantity = product.quantity - req.body.productsList[0].quantity;
+    }
+
+    //console.log( "hena",userCart.productsList[0].quantity)
+
+    // userCart.productsList[0].quantity = userCart.productsList[0].quantity - req.body.productsList[0].quantity;
+  }
 
   await userCart.save();
-
+  await product.save();
   res.status(200).send(userCart);
 });
 
@@ -110,25 +128,26 @@ router.delete("/user/:id/product/:productId", async (req, res) => {
   let cart = await Cart.find({ userId: req.params.id });
   if (!cart) return res.status(400).send("User's cart is not found");
 
-  const product = await Product.find({ id: req.params.productId });
+  const product = await Product.findById(req.params.productId);
   if (!product) return res.status(400).send("Product ID is not found");
 
-  //console.log(req.params.productId)
   ///console.log(cart[0].productsList);
   const indexFound = cart[0].productsList.findIndex(item => {
-
     return item.productId == req.params.productId;
   });
-  console.log(indexFound)
-  if(indexFound !==-1){ //found
-    cart[0].productsList.splice(indexFound, 1)
-    console.log(cart[0].productsList);
+  console.log(indexFound);
+  if (indexFound !== -1) {
+    //found
+   
+    product.quantity = product.quantity + cart[0].productsList[indexFound].quantity;
+    
+    cart[0].productsList.splice(indexFound, 1);
   }
-  console.log(cart[0].productsList);
+  //console.log(cart[0].productsList);
 
   await cart[0].save();
+  await product.save();
   res.status(200).send(cart);
-
 });
 
 //Checkout => Empty Cart
@@ -145,10 +164,9 @@ router.get("/user/:id/checkout", async (req, res) => {
 
   //console.log(cart[0].productsList);
 
-  cart[0].productsList.splice(0, cart[0].productsList.length)
-  
-  //console.log(cart[0].productsList);
+  cart[0].productsList.splice(0, cart[0].productsList.length);
 
+  //console.log(cart[0].productsList);
 
   await cart[0].save();
 
