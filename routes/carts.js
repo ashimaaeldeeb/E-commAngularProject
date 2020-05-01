@@ -45,34 +45,22 @@ router.post("/user/:id", validateCart, async (req, res) => {
   const userCart = await Cart.findById(user.cart); //elcart beta3t eluser dah
   if (!userCart) return res.status(400).send("User's cart is not found");
 
-  //console.log(userCart.productsList.length);
-  //console.log(req.body.productsList[0]);
-  //console.log(userCart.productsList);
-
   const product = await Product.findById(req.body.productsList[0].productId);
   if (!product) return res.status(400).send("Product is not found");
 
   const indexFound = userCart.productsList.findIndex(item => {
     return item.productId == req.body.productsList[0].productId;
   });
-  //console.log( userCart.productsList[0].quantity)
-  console.log(product.quantity);
-  // if (indexFound !== -1 && product.quantity <= 0) { //already here but no more products
-
-  //   userCart.productsList.splice(indexFound, 1); //law elproducts 5elset wana batlob wa7ed kman beymsa7
-
-  // } else
-  if (indexFound !== -1 && product.quantity >= 0) {
-    //already here
-    // console.log(
-    //   "alreadyhere",
-    //   product.quantity - req.body.productsList[0].quantity
-    // );
-    if (product.quantity - req.body.productsList[0].quantity >= 0) {
-      userCart.productsList[indexFound].quantity =
+  //update
+  if (indexFound !== -1 && product.quantity >= 0) { //here
+    if (product.quantity - req.body.productsList[0].quantity >= 0) { //available enough qty
+       userCart.productsList[indexFound].quantity = //plus in userCart
         userCart.productsList[indexFound].quantity +
         req.body.productsList[0].quantity;
-      product.quantity = product.quantity - req.body.productsList[0].quantity;
+      product.quantity = product.quantity - req.body.productsList[0].quantity; //minus in products
+    }
+    else{ //products < desired qty
+      return res.status(400).send("more than available quantity");
     }
   } else if (product.quantity > 0) { //not in cart yet
     if (product.quantity - req.body.productsList[0].quantity >= 0) {
@@ -81,11 +69,9 @@ router.post("/user/:id", validateCart, async (req, res) => {
         quantity: req.body.productsList[0].quantity
       });
       product.quantity = product.quantity - req.body.productsList[0].quantity;
-    }
-
-    //console.log( "hena",userCart.productsList[0].quantity)
-
-    // userCart.productsList[0].quantity = userCart.productsList[0].quantity - req.body.productsList[0].quantity;
+    } else{ //products < desired qty
+        return res.status(400).send("more than available quantity");
+      }
   }
 
   await userCart.save();
